@@ -2,7 +2,12 @@ package com.brainmatics.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.brainmatics.dto.ResponseData;
 import com.brainmatics.dto.SearchBookForm;
 import com.brainmatics.entity.Book;
 import com.brainmatics.services.BookService;
@@ -42,7 +48,20 @@ public class BookController {
 	}
 	
 	@PostMapping
-	public Book saveBook(@RequestBody Book book) {
-		return bookService.save(book);
+	public ResponseEntity<?> saveBook(@Valid @RequestBody Book book, Errors errors) {
+		ResponseData response = new ResponseData();
+		if(!errors.hasErrors()) {
+			response.getMessages().add("Book saved");
+			response.setStatus(true);
+			response.setPayload(bookService.save(book));
+			return ResponseEntity.ok(response);
+		}else {
+			for(ObjectError err: errors.getAllErrors()) {
+				response.getMessages().add(err.getDefaultMessage());
+			}
+			response.setStatus(false);
+			return ResponseEntity.ok(response);
+		}
+		
 	}
 }
