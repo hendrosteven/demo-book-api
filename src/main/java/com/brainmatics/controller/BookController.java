@@ -27,9 +27,12 @@ public class BookController {
 	@Autowired
 	private BookService bookService;
 	
-	@GetMapping(value = "{/id}")
-	public Book findById(@PathVariable("id") long id) {
-		return bookService.findById(id).get();
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<?> findById(@PathVariable("id") long id) {
+		ResponseData response = new ResponseData();
+		response.setStatus(true);
+		response.setPayload(bookService.findById(id).get());
+		return ResponseEntity.ok(response);
 	}
 	
 	@GetMapping
