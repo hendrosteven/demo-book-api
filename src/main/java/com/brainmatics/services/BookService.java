@@ -35,7 +35,7 @@ public class BookService {
 	
 	public List<Book> findAllByTitle(String title, int page) {
 		Pageable pageable = PageRequest.of(page, 10);
-		return bookRepo.findAllByTitle(title, pageable);
+		return bookRepo.findAllByTitle("%"+title+"%", pageable);
 	}
 	
 	public Book findByCode(String code) {
