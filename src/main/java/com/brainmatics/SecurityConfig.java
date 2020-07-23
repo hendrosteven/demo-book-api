@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
@@ -30,6 +31,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		http.addFilterBefore(new CorsConfig(), ChannelProcessingFilter.class);
 		http.authorizeRequests()
 			.antMatchers("/").permitAll()
+			.antMatchers("/actuator/**").permitAll()
 			.antMatchers(HttpMethod.POST, "/user").permitAll()
 			.antMatchers(HttpMethod.POST, "/user/login").permitAll()
 			.antMatchers(HttpMethod.GET, "/books/**").permitAll()
@@ -38,6 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 			.and().httpBasic()
 			.and().csrf().disable();
 	}
+
 	
 
    @SuppressWarnings("deprecation")
