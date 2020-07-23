@@ -1,40 +1,56 @@
 package com.brainmatics.services;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.brainmatics.entity.Users;
+import com.brainmatics.entity.User;
 import com.brainmatics.repositories.UserRepo;
 
 @Service("userService")
 @Transactional
-public class UserService {
+public class UserService implements UserDetailsService {
 
 	@Autowired
 	private UserRepo userRepo;
-	
-	public Users save(Users user) {
+
+	public User save(User user) {
 		return userRepo.save(user);
 	}
-	
-	public Iterable<Users> findAll(){
+
+	public Iterable<User> findAll() {
 		return userRepo.findAll();
 	}
-	
-	public Users login(String email, String password) {
-		Users users = null;
-		users = userRepo.findByEmail(email);
+
+	public User login(String email, String password) {
+		User user =  userRepo.findByEmail(email);
 		
-		if(users==null) {
-			return users;
+		if(user==null) {
+			return null;
+		}
+		if(!user.getPassword().equals(password)) {
+			return null;
 		}
 		
-		if(users.getPassword().equals(password)) {
-			return users;
+		return user;
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		User user = userRepo.findByEmail(email);
+		if (user == null) {
+			throw new UsernameNotFoundException("User not found");
 		}else {
-			return null;
+			 List<String> roles = new ArrayList<String>();
+	         roles.add("ADMIN");
+	         return new User(user,roles);
 		}
 	}
 }
