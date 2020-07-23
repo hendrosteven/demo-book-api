@@ -32,12 +32,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		http.authorizeRequests()
 			.antMatchers("/").permitAll()
 			.antMatchers("/actuator/**").permitAll()
-			.antMatchers("/v2/api-docs/**").permitAll()
-			.antMatchers("/configuration/ui/**").permitAll()
-			.antMatchers("/swagger-resources/**").permitAll()
-			.antMatchers("/configuration/security/**").permitAll()
-			.antMatchers("/swagger-ui.html/**").permitAll()
-			.antMatchers("/webjars/**").permitAll()
 			.antMatchers(HttpMethod.POST, "/user").permitAll()
 			.antMatchers(HttpMethod.POST, "/user/login").permitAll()
 			.antMatchers(HttpMethod.GET, "/books/**").permitAll()
@@ -47,17 +41,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 			.and().csrf().disable();
 	}
 	
-	 @Override
-	    public void configure(WebSecurity web) throws Exception {
-	        web.ignoring().antMatchers("/v2/api-docs",
-	                "/configuration/ui",
-	                "/swagger-resources",
-	                "/configuration/security",
-	                "/swagger-ui.html",
-	                "/webjars/**");
-	    }
-
-//	
 
    @SuppressWarnings("deprecation")
    @Bean
